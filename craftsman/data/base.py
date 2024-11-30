@@ -172,6 +172,7 @@ class BaseDataset(Dataset):
                 )
                 / 255.0
             ).float()
+            img = torch.flip(img, dims=[1]) # Flip along the width dimension
             mask: Float[Tensor, "H W 1"] = img[:, :, -1:]
             image: Float[Tensor, "H W 3"] = img[:, :, :3] * mask + background_color[
                 None, None, :
@@ -192,7 +193,7 @@ class BaseDataset(Dataset):
             if self.cfg.image_type == "rgb":
                 img_path = f'{self.cfg.image_data_path}/' + "/".join(self.uids[index].split('/')[-2:]) + f"/{'{:04d}'.format(sel_idx)}_rgb.jpeg"
             elif self.cfg.image_type == "normal":
-                img_path = f'{self.cfg.image_data_path}/' + "/".join(self.uids[index].split('/')[-2:]) + f"/{'{:04d}'.format(sel_idx)}_normal.jpeg"
+                img_path = f'{self.cfg.image_data_path}/' + "/".join(self.uids[index].split('/')[-2:]) + f"/{'{:03d}'.format(sel_idx)}.png"
             ret["image"], ret["mask"] = _load_single_image(img_path, background_color, self.cfg.marign_pix_dis)
 
         else:
